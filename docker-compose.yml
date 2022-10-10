@@ -10,7 +10,6 @@ x-environment: &airflow_environment
   - AIRFLOW__CORE__CHECK_SLAS=True
   - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
   - AIRFLOW__WEBSERVER__RBAC=False
-  - _PIP_ADDITIONAL_REQUIREMENTS=pyspark==3.2.1
 # ====================================== /AIRFLOW ENVIRONMENT VARIABLES ======================================
 services:
   postgres:
@@ -43,8 +42,7 @@ services:
       - "8080:8080"
     volumes:
       - logs:/opt/airflow/logs
-      - ../spark/app:/usr/local/spark/app #Spark Scripts (Must be the same path in airflow and Spark Cluster)
-      - ../spark/resources:/usr/local/spark/resources #Resources folder (Must be the same path in airflow and Spark Cluster)
+      - ./spark/resources:/usr/local/spark/resources
     environment: *airflow_environment
     command: webserver
   scheduler:
@@ -58,8 +56,7 @@ services:
       - ./dags:/opt/airflow/dags
       - logs:/opt/airflow/logs
       - ./data:/opt/data:rw
-      - ../spark/app:/usr/local/spark/app #Spark Scripts (Must be the same path in airflow and Spark Cluster)
-      - ../spark/resources:/usr/local/spark/resources #Resources folder (Must be the same path in airflow and Spark Cluster)
+      - ./spark/resources:/usr/local/spark/resources
     environment: *airflow_environment
     command: scheduler
 
@@ -77,8 +74,7 @@ services:
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
     volumes:
-      - ../spark/app:/usr/local/spark/app # Spark scripts folder (Must be the same path in airflow and Spark Cluster)
-      - ../spark/resources:/usr/local/spark/resources #Resources folder (Must be the same path in airflow and Spark Cluster)
+      - ./spark/resources:/usr/local/spark/resources
     ports:
       - "8181:8080"
       - "7077:7077"
